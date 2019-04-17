@@ -120,6 +120,12 @@ for (var k in myObject) {
 }
 // "a" 24
 // "b" 的枚举属性 enumerable 为 false，所以不会打印出来
+
+myObject.propertyIsEnumerable("a"); // true
+myObject.propertyIsEnumerable("b"); // false
+
+Object.keys(myObject);    // ["a"]
+Object.getOwnPropertyNames(myObject);    // ["a", "b"]
 ```
 
 
@@ -141,6 +147,9 @@ myObject.hasOwnProperty("b");   // false
 - `hasOwnProperty(..)` 只会检查属性是否在 `myObject` 对象中，不会检查 `[[Prototype]]` 链。
 - `Object.create(null)` 创建的对象 `myObject`，则可以通过一种强硬手段来判断： `Object.prototype.hasOwnProperty.call(myObject,"a")`
 - `for.. in` 循环可以用来遍历对象的可枚举属性列表（包括`[[Prototype]]`链）
+- `propertyIsEnumerable(..)`会检查给定的属性名是否直接存在于对象中（而非原型链上），并且满足 `enumerable: true`
+- `Object.keys(..)`查找当前对象中（而非原型链上）的可枚举属性，返回一个数组
+- `Object.getOwnPropertyNames(..)`查找当前对象中（而非原型链上）的所有属性，返回一个数组
 
 
 
@@ -150,4 +159,41 @@ myObject.hasOwnProperty("b");   // false
 2. `every(..)` 会一直运行直到回调函数返回`false`（或者“假”值）。
 3. `some(..)` 会一直运行直到回调函数返回`true`（或者“真”值）。
 
+
+> 给普通对象定义迭代器 `@@iterator` 来获取对象的内部属性：
+
+```js{4}
+myObject = { a: 2, b: 3}
+Object.defineProperty(myObject, Symbol.iterator, {
+  writable: false,
+  enumerable: false,
+  configurable: true,
+  value: function() {
+    var o = this
+    var idx = 0
+    var ks = Object.keys(o)
+    return {
+      next: function() {
+        return {
+          value: o[ks[idx++]],
+          done: (idx > ks.length)
+        }
+      }
+    }
+  }
+})
+
+// 手动遍历 myObject
+var it = myObject[Symbol.iterator]()
+it.next()     // { value: 2, done: false}
+it.next()     // { value: 3, done: false}
+it.next()     // { value: undefined, done: true}
+
+// 用 for...of 遍历 myObject
+for (var v of myObject) {
+  console.log(v)
+}
+// 2
+// 3
+```
 
