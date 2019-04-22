@@ -32,7 +32,8 @@ module.exports = {
       '/javascript/': [
         '',
         'js_1',
-        'js_2'
+        'js_2',
+        'js_3'
       ]
     },
     sidebarDepth: 2,
