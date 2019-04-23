@@ -66,3 +66,71 @@ class Promise {
 ```
 
 #### 4. 异步的实现
+
+类似于发布订阅，先将 `then` 里的函数存到一个数组中,如下多个`then`的情况：
+
+```js{4}
+let p = new Promise()
+p.then()
+p.then()
+```
+成功或者失败时，`forEach` 调用它们：
+```js{4}
+class Promise {
+  constructor (executor) {
+    this.state = 'pending'
+    this.value = undefined
+    this.reason = undefined
+    this.onResolvedCallbacks = []        // 成功存放的数组
+    this.onRejectedCallbacks = []        // 失败存放法数组
+
+    let resolve = value => {
+      if (this.state === 'pending') {
+        this.state = 'fulfilled'
+        this.value = value
+        // 一旦resolve执行，调用成功数组的函数
+        this.onResolvedCallbacks.forEach( fn => fn() )
+      }
+    }
+
+    let reject = reason => {
+      if (this.state === 'pending') {
+        this.state = 'fulfilled'
+        this.reason = reason
+        // 一旦reject执行，调用失败数组的函数
+        this.onResolvedCallbacks.forEach( fn => fn() )
+      }
+    }
+
+    try {
+      executor(resolve, reject)
+    } catch (err) {
+      reject(err)
+    }
+  }
+
+  then (onFulfilled, onRejected) {
+    if (this.state === 'fulfilled') onFulfilled(this.value)
+    if (this.state === 'rejected') onFulfilled(this.reason)
+
+    // 当状态state为pending时
+    if (this.state === 'pending') {
+      // onFulfilled传入到成功数组
+      this.onResolvedCallbacks.push(() => onFulfilled(this.value))
+      // onRejected传入到失败数组
+      this.onRejectedCallbacks.push(() => onRejected(this.reason))
+    }
+  }
+}
+```
+
+#### 5. 解决链式调用： `new Promise().then().then()`
+
+1.为了达成链式，默认在第一个 `then` 里返回一个新的`promise`,成为`promise2`:
+
+```js{4}
+promise2 = new Promise((resolve, reject)=>{})
+```
+- 将这个promise2返回的值传递到下一个then中
+- 如果返回一个普通的值，则将普通的值传递给下一个then中
+
