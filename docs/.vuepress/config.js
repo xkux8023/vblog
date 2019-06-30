@@ -59,6 +59,7 @@ module.exports = {
           children: [
             'ds_1',
             'ds_2',
+            'ds_3'
           ]
         },
         {
@@ -66,6 +67,7 @@ module.exports = {
           collapsable: false,
           children: [
             'algo_1',
+            'algo_2',
           ]
         }
       ]
