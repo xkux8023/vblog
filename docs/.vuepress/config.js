@@ -59,7 +59,9 @@ module.exports = {
           children: [
             'ds_1',
             'ds_2',
-            'ds_3'
+            'ds_3',
+            'ds_4',
+            'ds_5'
           ]
         },
         {
