@@ -30,7 +30,8 @@ module.exports = {
             'js_4',
             'js_5',
             'js_6',
-            'js_7'
+            'js_7',
+            'js_8'
           ]
         },
         {
