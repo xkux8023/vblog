@@ -50,23 +50,6 @@
 #### CND 部署：静态资源尽量使用 CDN 部署
 
 
-#### 函数防抖
-
-```js{4}
-Function.prototype.myCall = function (context) {
-  if (typeof this !== 'function') {
-    throw new TypeError('TypeError')
-  }
-  context = context || window
-  context.fn = this
-  let args = [...arguments].slice(1)
-  const result = context.fn(args)
-  delete context.fn
-  return result
-}
-
-```
-
 
 #### 函数节流： 隔一段时间发起一次请求
 
@@ -102,7 +85,7 @@ setInterval(throttle(() => {
 使用场景如： 不希望每次点击都触发网络请求，而是点击一次之后，过多久才可以再次点击才去发起请求
 
 ```js{4}
-// func 是需要节流的函数， wait 是等待的时间
+// func 是需要防抖的函数， wait 是等待的时间
 const debounce = (func, wait = 50) => {
   // 缓存一个定时器id
   let timer = 0
