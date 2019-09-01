@@ -7,17 +7,17 @@ module.exports = {
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
-      // { text: 'Node', link: '/node/' },
+      { text: 'Sicp', link: '/sicp/' },
       { text: 'JavaScript', link: '/javascript/' },
       { text: '数据结构与算法', link: '/dsaa/' },
       { text: 'Github', link: 'https://github.com/xkux8023' },
     ],
     sidebar: {
-      // '/node/': [
-      //   '',
-      //   'node_1',
-      //   'node_2'
-      // ],
+      '/sicp/': [
+        '',
+        'sicp_1',
+        'sicp_2'
+      ],
       '/javascript/': [
         '',
         {
