@@ -201,3 +201,289 @@ col: 0 1 2 3 4
 
 ```
 
+##### 求幂
+
+
+16. 习题 1.16 
+
+```scheme{4}
+(define (expt-iter b counter product)
+  ((if (= counter 0)
+      1
+      ((even? counter)
+        (expt-iter (square b) (/ n 2) a))
+      ((odd? counter)
+        (expt-iter b (- counter 1) (* b product)))))
+```
+
+17. 习题 1.17 
+
+```scheme{4}
+(define (double n)
+    (+ n n)) 
+
+(define (halve n)
+    (/ n 2)) 
+
+(define (multi a b)
+  (cond ((= b 0) 0)
+        ((even? b) (double (multi a (halve b))))
+      ((odd? b) (+ a (multi a (- b 1)))))
+```
+
+
+18. 习题 1.18 
+
+```scheme{4}
+(define (multi a b)
+  (multi-iter a b 0))  
+
+(define (multi-iter a b product)
+  (cond ((= b 0) product)
+      ((even? b) (multi-iter (double a) (halve b) product))
+      ((odd? b) (multi-iter a (- b 1) (+ a product)))))
+```
+
+
+##### 最大公约数
+
+; 如果 r 是 a 除以 b 的余数，那么 a 和 b 的公约数正好也是 b 和 r 的公约数： `GCD(a, b) = GCD(b, r)`
+
+
+```scheme{4}
+
+; 欧几里德算法
+
+(define (gcd a b)
+  (if (= b 0)
+      a
+      (gcd b (reminder a b))))
+```
+
+
+##### 素数检测
+```scheme{4}
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)
+        ((divides? test-divisor) test-divisor))
+    (else (find-divisor n (+ test-divisor 1))))
+
+(define (divides?  a b)
+  (= (reminder b a) 0))
+```  
+
+; 也可以如下检测一个数是否是素数： n 是素数，当且仅当它是自己的最小因子
+
+```scheme{4}
+(define (prime? n)
+  (= n (smallest-divisor n)))
+```
+
+##### 费马检测
+
+下面的过程计算一个的幂对另一个数取模的结果
+```scheme{4}
+(define (expmond base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp) 
+         (remainder (square (expmond base (/ exp 2) m)) m))
+        
+        (else
+         (remainder (* base (expmond base (- exp 1) m)) m))))
+
+(define (fermat-test n)
+  (define (try-it a)
+    (= (expmond a n n) a))
+  (try-it (+ 1 (random (- n 1)))))
+
+(define (fast-prime? n times)
+  (cond ((= times 0) true)
+        ((fermat n) (fast-prime? n (- times 1)))
+        (else false)))         
+```
+
+
+
+; 对于整数 n 调用下面的 timed-prime-test 过程时，将打印出 n 并检查 n 是否为素数。如果 n 是素数，过程将打印三个 * ,随后是执行这一检查所用的时间量。
+```scheme{4}
+(define (timed-prime-test n)
+  (newline)
+  (display n)
+  (start-prime-test n (runtime)))
+
+(define (start-prime-test n start-time)
+  (if (prime? n)
+      (report-prime (- (runtime) start-time))))
+
+(define (report-prime elapsed-time)
+  (display " *** ")
+  (display elapsed-time))
+```
+22. 习题 1.22 
+要写出 search-for-primes 函数，我们首先需要解决以下几个子问题：
+
+1-写一个能产生下一个奇数的函数，用于生成连续奇数
+```scheme{4}
+(define (next-odd n)
+  (if (odd? n)
+      (+ 2 n)
+      (+ 1 n)))
+```
+2-写一个检查给定数字是否为素数的函数
+```scheme{4}
+(define (prime? n)
+  (= n (smallest-divisor n)))
+
+(define (smallest-divisor n)
+  (find-divisor n 2))
+
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)
+        ((divides? test-divisor n) test-divisor)
+        else (find-divisor n (+ test-divisor 1))))
+
+(define (divides? a b)
+  (= (remainder b a) 0))
+```
+3-写一个函数，给定它一个参数 n ，可以生成大于等于 n 的三个素数，或者更一般地，对于一个函数，给定它两个参数 n 和 count ，可以生成 count 个大于等于 n 的素数
+```scheme{4}
+(define (continue-primes n count)
+  (cond ((= count 0) display "are primes")
+        ((prime? n)
+          (display n)
+          (newline)
+          (continue-primes (next-odd n) (- count 1)))
+        (else
+          (continue-primes (next-odd n) count))))
+```
+4-测量寻找三个素数所需的时间
+
+```scheme{4}
+(define (test-foo)
+  (let ((start-time (real-time-clock)))
+    (foo)
+    (- (real-time-clock) start-time)))
+```
+
+5-组合起前面的 continue-primes 函数和 real-time-clock 函数，写出题目要求的 search-for-primes 函数了，这个函数接受参数 n ，找出大于等于 n 的三个素数，并且返回寻找素数所需的时间作为函数的返回值：
+
+```scheme{4}
+(define (search-for-primes n)
+  (let ((start-time (real-time-clock)))
+    (continue-primes n 3)
+    (- (real-time-clock) start-time)))
+```  
+
+23. 习题 1.23 
+
+要完成这个练习，我们需要：
+
+1.写出 next 函数
+```scheme{4}
+;next 函数接受参数 n ，如果 n 为 2 ，那么返回 3 ，否则返回 n+2 ：
+(define (next n)
+  (if (= n 2)
+      3
+      (+ n 2)))
+``` 
+2.使用 next 函数重定义 find-divisor 函数
+```scheme{4}
+(define (find-divisor n test-divisor)
+  (cond ((> (square test-divisor) n) n)
+        ((divides? test-divisor n) test-divisor)
+        else (find-divisor n (next test-divisor))))
+``` 
+3.使用新的 find-divisor 覆盖原来 search-for-primes 所使用的 find-divisor ，并使用一个文件来包裹它们，方便测试时使用
+```scheme{4}
+; 先引入 练习 1.22 的 search-for-primes 函数，再引入新的 find-divisor 函数，覆盖原来旧的 find-divisor
+(load "22-search-for-primes.scm")
+(load "23-find-divisor.scm")
+```   
+4.使用新的 search-for-primes 进行测试，和原来的 search-for-primes 进行对比
+
+
+
+##### 用高阶函数做抽象
+
+- 1.3.1-过程作为参数
+
+; 计算从 a 到 b 的各个整数之和
+```scheme{4}
+(define (sum-integers a b)
+  (if (> a b)
+      0
+      (+ a (sum-integers (+ a 1) b))))
+```
+
+; 计算给定范围内的整数的立方之和
+```scheme{4}
+(define (sum-cubes a b)
+  (if (> a b)
+      0
+      (+ (cube a) (sum-cubes (+ a 1) b))))
+```
+; 计算下面的序列之和: `1/(1*3) + 1/(5*7) + 1/(9*11)+...`
+```scheme{4}
+(define (pi-sum a b)
+  (if (> a b)
+      0
+      (+ 
+        (/ 1.0 (* a (+ a 2)))
+        (pi-sum (+ a 4) b))))
+```
+
+; 通过填充下面模板的空位，产生上面的各个过程
+```scheme{4}
+(define (<name> a b)
+  (if (> a b)
+      0
+      (+ (<term> a)
+         (<name> (<next> a) b))))
+```         
+; 按照上面给出模式，去实现第一个求和的过程如下：
+```scheme{4}
+(define (sum term a next b)
+  (if (> a b)
+      0
+      (+ (term a)
+         (sum term (next a) next b))))
+
+(define (inc n) (+ n 1))
+(define (sum-cubes a b)
+  (sum cube a inc b))
+
+; 计算从 1 到 10 的立方和：
+(sum-cubes 1 10) ;3025  
+```  
+
+; 利用恒等函数帮助算出项值，就可以基于sum定义sum-integers:
+```scheme{4}
+(define (identity x) x)
+
+(define (sum-integers a b)
+  (sum identity a inc b))
+
+; 求出从 1 到 10 的整数和
+(sum-integers 1 10)       ;55
+
+; 以同样方式定义 pi-sum:
+(define (pi-sum a b)
+  (define (pi-term x)
+    (/ 1.0 (* x (+ x 2))))
+  (define (pi-next x)
+    (+ x 4))
+  (sum pi-term a pi-next b))
+
+; 计算 pai 的一个近似值
+(* 8 (pi-sum 1 1000)) ;3.139592655589783
+```
+
+; 求出函数 f 在范围 a 和 b 之间的定积分的近似值的过程如下：
+```scheme{4}
+(define (integral f a b dx)
+  (define (add-dx x) (+ x dx))
+  (* (sum f (+ a (/ dx 2.0)) add-dx b) dx))
+```
