@@ -487,3 +487,57 @@ col: 0 1 2 3 4
   (define (add-dx x) (+ x dx))
   (* (sum f (+ a (/ dx 2.0)) add-dx b) dx))
 ```
+
+
+##### lambda 表达式  
+
+```scheme{4}
+; 一般写法
+(define (f x y)
+  (define (f-helper a b)
+    (+ (* x (square a))
+       (* y b)
+       (* a b)))
+  (f-helper (+ 1 (* x y))
+            (- 1 y)))
+
+; lambda 写法 
+(define (f x y)
+  ((lambda (a b)
+      (+ (* x (square a))
+         (* y b)
+         (* a b)))
+   (+ 1 (* x y)) 
+   (- 1 y)))
+
+; let 写法            
+(define (f x y)
+  (let ((a (+ 1 (* x y)))
+        (b (- 1 y)))
+    (+ (* x (square a))
+       (* y b)
+       (* a b))))
+```
+
+
+
+; 下面可以比较下 lambda 与 js 的箭头函数的对比
+```js{4}
+const average = (a, b) => {
+  return (a+b)/2
+}
+const square = (c) => {
+  return c*c
+}
+const averageDamp = (f) => (x) => {
+  return average(x, f(x))
+}
+averageDamp(square)(10)     // 55
+```
+
+```scheme{4}
+(define (average-damp f)
+  (lambda (x) (average x (f x))))
+
+((average-damp square) 10)   ; 55
+```
