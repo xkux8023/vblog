@@ -23,8 +23,8 @@ console.log(b.age)      // 1
 
 ```js{4}
 function deepClone(obj) {
-  funtion isObject(o) {
-    return (typeof o === 'function || typeof o === 'object') && o !== null
+  function isObject(o) {
+    return (typeof o === 'function' || typeof o === 'object') && o !== null
   }
   if (!isObject(obj)) throw new Error('非对象')
 

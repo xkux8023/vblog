@@ -31,7 +31,8 @@ module.exports = {
             'js_5',
             'js_6',
             'js_7',
-            'js_8'
+            'js_8',
+            'js_9',
           ]
         },
         {

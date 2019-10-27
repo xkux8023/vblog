@@ -98,7 +98,7 @@ class Promise {
         this.state = 'fulfilled'
         this.reason = reason
         // 一旦reject执行，调用失败数组的函数
-        this.onResolvedCallbacks.forEach( fn => fn() )
+        this.onRejectedCallbacks.forEach( fn => fn() )
       }
     }
 

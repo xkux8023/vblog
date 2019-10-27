@@ -66,3 +66,20 @@ Function.prototype.mybind = function (context) {
 }
 
 ```
+
+#### instanceof 的原理是什么？
+
+- 首先获取 “类型“ 的原型
+- 然后获取 ”对象“ 的原型
+- 然后一直循环判断 ”对象“ 的原型是否等于 ”类型“ 的原型，直到 ”对象“ 的原型为 null，因为原型链最终为null
+```js
+function myInstanceof(left, right) {
+  let prototype = right.prototype
+  left = left.__proto__
+  while(true) {
+    if (left === null || left === undefined) return false
+    if (prototype === left) return true
+    left = left.__proto__
+  }
+}
+```
