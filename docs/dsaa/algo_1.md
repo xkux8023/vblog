@@ -1,10 +1,28 @@
-### LRU缓存淘汰算法
+### 进制转换
 
-> 如何基于链表实现 LRU 缓存淘汰算法？
+将十进制转换成2~36的任意进制
+```js
+function baseConverter(decNumber, base) {
+    const remStack = new Stack()
+    const digits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    let number = decNumber  // 缓存一个副本
+    let rem
+    let baseString = ''
 
-1.如果此数据之前已经被缓存在链表中了，我们遍历得到这个数据对应的节点，并将其从原来的位置删除，然后再插入到链表头部；
+    if (!(base >= 2 && base <= 36)) {
+        return ''
+    }
 
-2.如果此数据没有在缓存链表中，则又可以分为两张情况：
+    while (number > 0) {
+        rem = Math.floor(number % base)
+        rem.push(rem)
+        number = Math.floor(number / base)
+    }
 
-- 如果此时缓存未满，则将此结点直接插入到链表的头部；
-- 如果此时缓存已满，则链表尾结点删除，将新的数据结点插入链表的头部
+    while (!remStack.isEmpty()) {
+        baseString += digits[remStack.pop()]
+    }
+
+    return baseString
+}
+```

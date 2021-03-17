@@ -1,5 +1,6 @@
 module.exports = {
   title: '阿咏个人站',
+  base: '/blog/',
   descroption: 'Talk is cheap, show me the code!',
   head: [
     ['link', { rel: 'icon', href: '/code.ico' }]
@@ -33,6 +34,7 @@ module.exports = {
             'js_7',
             'js_8',
             'js_9',
+            'js_10'
           ]
         },
         {
@@ -64,7 +66,16 @@ module.exports = {
             'ds_2',
             'ds_3',
             'ds_4',
-            'ds_5'
+            'ds_5',
+            'ds_6',
+            'ds_7',
+            'ds_8',
+            'ds_9',
+            'ds_10',
+            'ds_11',
+            'ds_12',
+            'ds_13',
+            'ds_14',
           ]
         },
         {
@@ -73,6 +84,8 @@ module.exports = {
           children: [
             'algo_1',
             'algo_2',
+            'algo_3',
+            'algo_4',
           ]
         }
       ]

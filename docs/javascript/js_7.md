@@ -83,3 +83,19 @@ function myInstanceof(left, right) {
   }
 }
 ```
+
+#### new 的原理是什么？
+- 新生成一个对象
+- 链接到原型
+- 绑定this
+- 返回新对象
+
+```js
+function create() {
+  let obj = {}
+  let Con = [].shift.call(arguments)
+  obj.__proto__ = Con.prototype
+  let result = Con.apply(obj, arguments)
+  return result instanceof Object ? result : obj
+}
+```
